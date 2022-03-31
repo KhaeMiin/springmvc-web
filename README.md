@@ -2,7 +2,7 @@
 
 ## 스프링 MVC - 웹 페이지 만들기(간단하게)
 
-## 셋팅 설정
+## 프로젝트 설정
 1. Project:
 	- Gradle Project
 	- Language: Java 11
