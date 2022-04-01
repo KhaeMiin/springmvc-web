@@ -1,9 +1,8 @@
-package hello.itemservice.web.basic;
+package hello.itemservice.web.form;
 
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +12,9 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Controller
-@RequestMapping("/basic/items")
+@RequestMapping("/form/items")
 @RequiredArgsConstructor
-public class basicItemController {
+public class FormItemController {
 
     private final ItemRepository itemRepository;
 
@@ -23,7 +22,7 @@ public class basicItemController {
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items", items);
-        return "basic/items";
+        return "form/items";
     }
 
     /**
@@ -36,12 +35,13 @@ public class basicItemController {
     public String item(@PathVariable long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
-        return "basic/item";
+        return "form/item";
     }
 
     @GetMapping("/add")
-    public String addForm() {
-        return "/basic/addForm";
+    public String addForm(Model model) {
+        model.addAttribute("item", new Item());
+        return "/form/addForm";
     }
 
 //    @PostMapping("/add")
@@ -59,7 +59,7 @@ public class basicItemController {
 
         model.addAttribute("item", item);
 
-        return "/basic/item";
+        return "/form/item";
     }
 
 //    @PostMapping("/add")
@@ -69,7 +69,7 @@ public class basicItemController {
 
 //        model.addAttribute("item", item); //@ModelAttribute("item"):자동으로 모델에 넣어준다.("지정된 이름")으로
 
-        return "/basic/item";
+        return "/form/item";
     }
 
 //    @PostMapping("/add")
@@ -79,7 +79,7 @@ public class basicItemController {
 
 //        model.addAttribute("item", item); //@ModelAttribute: 지정된 이름이 없으면 클래스명 첫글자만 소문자로 바꿔서 저장된다.
 
-        return "/basic/item";
+        return "/form/item";
     }
 
 //    @PostMapping("/add")
@@ -87,13 +87,13 @@ public class basicItemController {
 
         itemRepository.save(item);
 //        model.addAttribute("item", item); //@ModelAttribute: 생략이 된다.
-        return "/basic/item";
+        return "/form/item";
     }
 
 //    @PostMapping("/add")
     public String addItemV5(Item item) {
         itemRepository.save(item);
-        return "redirect:/basic/items/" + item.getId();
+        return "redirect:/form/items/" + item.getId();
     }
 
     @PostMapping("/add")
@@ -101,20 +101,20 @@ public class basicItemController {
         Item saveItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", saveItem.getId());
         redirectAttributes.addAttribute("status",true); //쿼리 파라미터로 들어감
-        return "redirect:/basic/items/{itemId}";//redirectAttributes로 넣은 itemId가 여기로 들어감
+        return "redirect:/form/items/{itemId}";//redirectAttributes로 넣은 itemId가 여기로 들어감
     }
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
-        return "/basic/editForm";
+        return "/form/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
         itemRepository.update(itemId, item);
-        return "redirect:/basic/items/{itemId}";
+        return "redirect:/form/items/{itemId}";
     }
 
     /**
