@@ -33,7 +33,13 @@ public class FormItemController {
 
     }
 
+    @ModelAttribute("itemTypes")
+    public ItemType[] itemTypes() {
+        ItemType[] values = ItemType.values(); //배열로 넘겨줌
+        return values;
+//        return ItemType.values(); //이렇게 간략하게 한줄로 쓸 수 있음
 
+    }
 
     @GetMapping
     public String items(Model model) {
@@ -120,6 +126,7 @@ public class FormItemController {
     public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
         log.info("item.open={}", item.getOpen());
         log.info("item.regions={}", item.getRegions());
+        log.info("item.itemType={}", item.getItemType());
 
         Item saveItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", saveItem.getId());
