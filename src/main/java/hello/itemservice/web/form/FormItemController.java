@@ -2,6 +2,7 @@ package hello.itemservice.web.form;
 
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
+import hello.itemservice.domain.item.ItemType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -20,8 +23,21 @@ public class FormItemController {
 
     private final ItemRepository itemRepository;
 
+    @ModelAttribute("regions") //컨트롤러가 호출되면 regions를 이름으로 모델에 자동으로 무조건 담긴다. (단점: r계속 호출이 돼서 생성이 되니 성능 생각해야함)
+    public Map<String, String> regions() {
+        Map<String, String> regions = new LinkedHashMap<>();//LinkedHashMap: 순서대로 들어감
+        regions.put("SEOUL", "서울");
+        regions.put("BUSAN", "부산");
+        regions.put("JEJU", "제주");
+        return regions;
+
+    }
+
+
+
     @GetMapping
     public String items(Model model) {
+
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items", items);
         return "form/items";
@@ -37,12 +53,14 @@ public class FormItemController {
     public String item(@PathVariable long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
+
         return "form/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("item", new Item());
+
         return "/form/addForm";
     }
 
@@ -101,6 +119,8 @@ public class FormItemController {
     @PostMapping("/add")
     public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
         log.info("item.open={}", item.getOpen());
+        log.info("item.regions={}", item.getRegions());
+
         Item saveItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", saveItem.getId());
         redirectAttributes.addAttribute("status",true); //쿼리 파라미터로 들어감
@@ -111,6 +131,7 @@ public class FormItemController {
     public String editForm(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
+
         return "/form/editForm";
     }
 
@@ -128,6 +149,7 @@ public class FormItemController {
         itemRepository.save(new Item("itemA", 10000, 10));
         itemRepository.save(new Item("itemA", 20000, 20));
     }
+
 
 
 }
