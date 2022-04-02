@@ -3,6 +3,7 @@ package hello.itemservice.web.form;
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/form/items")
 @RequiredArgsConstructor
@@ -98,10 +100,11 @@ public class FormItemController {
 
     @PostMapping("/add")
     public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
+        log.info("item.open={}", item.getOpen());
         Item saveItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", saveItem.getId());
         redirectAttributes.addAttribute("status",true); //쿼리 파라미터로 들어감
-        return "redirect:/form/items/{itemId}";//redirectAttributes로 넣은 itemId가 여기로 들어감
+        return "redirect:/form/items/{itemId}"; //redirectAttributes로 넣은 itemId가 여기로 들어감
     }
 
     @GetMapping("/{itemId}/edit")
